@@ -14,7 +14,7 @@ class RandomObj
      * Implementation for a login function
      */
 
-    public function login() {
+    public function login() {}
 
-    }
+    function is_valid_email_address($email_address) {}
 }

@@ -13,13 +13,22 @@ use PHPUnit\Framework\TestCase;
 
 final class TechnicalTest extends TestCase
 {
-    public function testisUsernameAndPasswordFound() {
+
+    public function testLoginReturnsFalseOnEmptyUsernameAndPassword() {
         $username = "";
         $password = "";
         $regobj = new RandomObj();
         $functionReturn = false;
         $this->assertEquals(
-            $regobj->register(), true
+            false, $regobj->register()
+        );
+    }
+
+    public function testLoginReturnsTrueOnValidUsernameAndPassword() {
+        $regobj = new RandomObj();
+        $functionReturn = false;
+        $this->assertEquals(
+            true, $regobj->register("Michael", "Bolton")
         );
     }
 

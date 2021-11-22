@@ -77,7 +77,28 @@ final class TechnicalTest extends TestCase
         $username = "asdf@asdf.com";
         $password = "asdfg1";
         $this->assertEquals(
-            "User Registration Success", $regobj->register($username, $password)->getMessage()
+            '{"username":"asdf@asdf.com","password":"71f713f7c9f356ea3b3a54bcb3452642196347a48f55d1c9b71c154373a7a131"}', $regobj->register($username, $password)->getMessage()
+        );
+    }
+
+    function testLogingFailsForNonExistentUser() {
+        $regobj = new RandomObj();
+        $username = "NOT EXIST";
+        $password = "NOT EXIST";
+        $this->assertEquals(
+            'User not authenticated', $regobj->login($username, $password)->getMessage()
+        );
+    }
+
+    function testLoginIsSuccesForValidUser() {
+        $regobj = new RandomObj();
+        $username = "asdfasdfasdfasdf@asdfasdf.com";
+        $password = "asdfasdf1234";
+        $this->assertEquals(
+            '{"username":"asdfasdfasdfasdf@asdfasdf.com","password":"0755f987080856f8215b78c52f1b0796a69436be5fdba60be0ccf73c7aa3c23f"}', $regobj->register($username, $password)->getMessage()
+        );
+        $this->assertEquals(
+            'User authenticated', $regobj->login($username, $password)->getMessage()
         );
     }
 }

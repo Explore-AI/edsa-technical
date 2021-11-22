@@ -49,9 +49,10 @@ class RandomObj
             return Response::asFailure($passwordValidation->getMessage());
         }
         //SAVE USER
+        $user = $this->saveUser($username, $password);
 
         //RETURN USER DATA
-        return Response::asSuccess("User Registration Success");
+        return Response::asSuccess($user);
     }
 
     private function isValidUsername($username) {
@@ -70,6 +71,29 @@ class RandomObj
             return Response::asFailure("Passwords must contain at least one digit");
         }
         return Response::asSuccess();
+    }
+
+    private function saveUser($username, $password) {
+        $user = json_encode(array('username' => $username, 'password' => $this->getPasswordHash($password)));
+        file_put_contents("users.txt", $user);
+        return $user;
+    }
+
+    private function getPasswordHash($data) {
+        return hash('sha256', $data);
+    }
+
+    public function login($username, $password) {
+        $users = explode('\n', file_get_contents("users.txt"));
+        foreach($users as $user) {
+            if ($user != "") {
+                $JSONData = json_decode($user, true);
+                if ($username == $JSONData['username'] && $this->getPasswordHash($password) == $JSONData['password']) {
+                    return Response::asSuccess("User authenticated");
+                }
+            }
+        }
+        return Response::asFailure("User not authenticated");
     }
 
 }

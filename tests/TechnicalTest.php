@@ -1,5 +1,6 @@
-<?php declare(strict_types=1);
+<?php declare( strict_types = 1 );
 include "RandomObj.php";
+
 use PHPUnit\Framework\TestCase;
 
 //  To install PHP Unit
@@ -14,36 +15,69 @@ use PHPUnit\Framework\TestCase;
 final class TechnicalTest extends TestCase
 {
 
-    public function testLoginReturnsFalseOnEmptyUsernameAndPassword() {
-        $username = "";
-        $password = "";
+    /*
+     * Registration function
+     * Login function
+     *  - Reg Username(email)/password(6 len AlphaNumeric atleast one number)
+     *      - Save user to file in json
+     *  - Loggin Username/Password
+     *      - validate that username + password exists
+     */
+    // Test that the function correctly registers the user with all required fields
+
+    public function testRegistrationFailsWithEmptyUsername() {
         $regobj = new RandomObj();
-        $functionReturn = false;
         $this->assertEquals(
-            false, $regobj->register()
+            false, $regobj->register('', '')->isSuccess()
+        );
+        $this->assertEquals(
+            "Username is empty", $regobj->register('', '')->getMessage()
         );
     }
 
-    public function testLoginReturnsTrueOnValidUsernameAndPassword() {
+    public function testRegistrationFailsWithEmptyPassword() {
         $regobj = new RandomObj();
-        $functionReturn = false;
         $this->assertEquals(
-            true, $regobj->register("Michael", "Bolton")
+            false, $regobj->register('asdf', '')->isSuccess()
+        );
+
+        $this->assertEquals(
+            "Password is empty", $regobj->register('asdf', '')->getMessage()
         );
     }
 
-    /*
-     * Users username needs to be a valid email
-     */
+    public function testRegistrationFailsWithInValidEmailAddress() {
+        $regobj = new RandomObj();
+        $invalidEmails = array(
+            '@', '123123', "asdf@asdf", '@sdfg.com'
+        );
+        foreach($invalidEmails as $invalidEmail) {
+            $this->assertEquals(
+                false, $regobj->register($invalidEmail, 'adf')->isSuccess()
+            );
+            $this->assertEquals(
+                "Username is invalid", $regobj->register($invalidEmail, 'adf')->getMessage()
+            );
+        }
+    }
 
-    /*
-     * Users password needs to be >= 6 length and have Alpha and atleast 1 number
-     */
+    public function testRegistrationFailsWithInvalidPassword() {
+        $regobj = new RandomObj();
+        $username = "asdf@asdf.com";
+        $this->assertEquals(
+            "Passwords need to be greater than 5 characters", $regobj->register($username, 'adf')->getMessage()
+        );
+        $this->assertEquals(
+            "Passwords must contain at least one digit", $regobj->register($username, 'adfaaA')->getMessage()
+        );
+    }
 
-    /*
-     * Return datastructure that would be written to a datastore
-     */
-    public function testValidationPassesUserIsRegistered() {
-
+    function testRegistrationReturnSuccessOnValidInputs() {
+        $regobj = new RandomObj();
+        $username = "asdf@asdf.com";
+        $password = "asdfg1";
+        $this->assertEquals(
+            "User Registration Success", $regobj->register($username, $password)->getMessage()
+        );
     }
 }

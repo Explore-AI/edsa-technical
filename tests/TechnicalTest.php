@@ -45,11 +45,11 @@ final class TechnicalTest extends TestCase
     public function testRegistrationFailsWithInValidEmailAddress() {
         $regobj = new RandomObj();
         $invalidEmails = array(
-            '@', '123123', "asdf@asdf", '@sdfg.com'
+            '@', '123123', "notvalid@faildomain", '@what.com'
         );
         foreach($invalidEmails as $invalidEmail) {
             $this->assertEquals(
-                false, $regobj->register($invalidEmail, 'adf')->isSuccess()
+                false, $regobj->register($invalidEmail, 'nan')->isSuccess()
             );
             $this->assertEquals(
                 "Username is invalid", $regobj->register($invalidEmail, 'adf')->getMessage()
@@ -59,21 +59,21 @@ final class TechnicalTest extends TestCase
 
     public function testRegistrationFailsWithInvalidPassword() {
         $regobj = new RandomObj();
-        $username = "asdf@asdf.com";
+        $username = "valid@valid.com";
         $this->assertEquals(
-            "Passwords need to be greater than 5 characters", $regobj->register($username, 'adf')->getMessage()
+            "Passwords need to be greater than 5 characters", $regobj->register($username, 'nan')->getMessage()
         );
         $this->assertEquals(
-            "Passwords must contain at least one digit", $regobj->register($username, 'adfaaA')->getMessage()
+            "Passwords must contain at least one digit", $regobj->register($username, 'mehMeh1')->getMessage()
         );
     }
 
     function testRegistrationReturnSuccessOnValidInputs() {
         $regobj = new RandomObj();
-        $username = "asdf@asdf.com";
-        $password = "asdfg1";
+        $username = "valid@valid.com";
+        $password = "aRealyGoodPassword123";
         $this->assertEquals(
-            '{"username":"asdf@asdf.com","password":"71f713f7c9f356ea3b3a54bcb3452642196347a48f55d1c9b71c154373a7a131"}', $regobj->register($username, $password)->getMessage()
+            '', $regobj->register($username, $password)->getMessage()
         );
     }
 
@@ -88,10 +88,10 @@ final class TechnicalTest extends TestCase
 
     function testLoginIsSuccesForValidUser() {
         $regobj = new RandomObj();
-        $username = "asdfasdfasdfasdf@asdfasdf.com";
-        $password = "asdfasdf1234";
+        $username = "valid@valid.com";
+        $password = "aRealyGoodPassword123";
         $this->assertEquals(
-            '{"username":"asdfasdfasdfasdf@asdfasdf.com","password":"0755f987080856f8215b78c52f1b0796a69436be5fdba60be0ccf73c7aa3c23f"}', $regobj->register($username, $password)->getMessage()
+            '{"username":"valid@valid.com","password":""}', $regobj->register($username, $password)->getMessage()
         );
         $this->assertEquals(
             'User authenticated', $regobj->login($username, $password)->getMessage()

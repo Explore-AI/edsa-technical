@@ -79,7 +79,7 @@ class RandomObj
         foreach($users as $user) {
             if ($user != "") {
                 $JSONData = json_decode($user, true);
-                if ($username == $JSONData['username'] && $this->getPasswordNonReadable($password) == $JSONData['password']) {
+                if ($username == $JSONData['username'] && $password == $JSONData['password']) {
                     return Response::asSuccess("User authenticated");
                 }
             }

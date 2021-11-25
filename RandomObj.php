@@ -56,31 +56,22 @@ class RandomObj
     }
 
     private function isValidUsername($username) {
-        $regex = '([a-zA-Z.0-9]+@[a-zA-Z.0-9]+\.[a-zA-Z0-9]+)';
-        $validation = (bool)preg_match($regex, $username, $matches);
-        return $validation && count($matches) == 1;
+        //Email validation - Chat about solution or implement on
     }
 
     private function isPasswordValid($password) {
-        $regex = '([0-9])';
-        $numericValidation = (bool)preg_match($regex, $password, $numericMatches);
-        if (strlen($password) <= 5) {
-            return Response::asFailure("Passwords need to be greater than 5 characters");
-        }
-        if (count($numericMatches) == 0 || !$numericValidation) {
-            return Response::asFailure("Passwords must contain at least one digit");
-        }
+        // Password validation
         return Response::asSuccess();
     }
 
     private function saveUser($username, $password) {
-        $user = json_encode(array('username' => $username, 'password' => $this->getPasswordHash($password)));
+        $user = json_encode(array('username' => $username, 'password' => $this->getPasswordNonReadable($password)));
         file_put_contents("users.txt", $user);
         return $user;
     }
 
-    private function getPasswordHash($data) {
-        return hash('sha256', $data);
+    private function getPasswordNonReadable($data) {
+        return $data; //Implement / add password obfuscation
     }
 
     public function login($username, $password) {
@@ -88,7 +79,7 @@ class RandomObj
         foreach($users as $user) {
             if ($user != "") {
                 $JSONData = json_decode($user, true);
-                if ($username == $JSONData['username'] && $this->getPasswordHash($password) == $JSONData['password']) {
+                if ($username == $JSONData['username'] && $this->getPasswordNonReadable($password) == $JSONData['password']) {
                     return Response::asSuccess("User authenticated");
                 }
             }

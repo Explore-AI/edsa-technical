@@ -36,13 +36,9 @@ final class TechnicalTest extends TestCase
     }
 
     public function testRegistrationFailsWithEmptyPassword() {
-        $regobj = new RandomObj();
+        //Implement this test
         $this->assertEquals(
-            false, $regobj->register('asdf', '')->isSuccess()
-        );
-
-        $this->assertEquals(
-            "Password is empty", $regobj->register('asdf', '')->getMessage()
+            "Test implemented", "Not implemented"
         );
     }
 
